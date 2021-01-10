@@ -1,0 +1,76 @@
+banner:
+  enable: true
+  title: 誓箭小仙的小站
+  src: /js/ui/banner.js
+  border: true
+  cloud:
+    enable: true
+    color: "white"
+  go_down:
+    enable: true
+    icon: icon-arrow-down-s-line
+
+# 社交链接
+social:
+  - name: GitHub
+    link: https://github.com/onejftop
+    icon: icon-github-line
+    color: "#181717"
+  - name: E-Mail
+    link: mailto:onejftop@onejftop.com
+    icon: icon-mail-line
+    color: "#8E71C1"
+  - name: 哔哩哔哩动画
+    link: https://space.bilibili.com/96686020
+    icon: icon-bilibili-line
+    color: "#FF8EB3"
+
+pages:
+  - name: 我的小伙伴们
+    url: /links/
+    icon: icon-genderless-line
+    color: dodgerblue
+  - name: 喜欢的女孩子
+    url: /girls/
+    icon: icon-women-line
+    color: hotpink
+
+girls:
+  enable: true
+
+# 公告
+notice:
+  enable: true
+  content: 欢迎来到小仙的小站！
+
+# Cursor 光标
+cursor:
+  enable: true
+  default: https://cdn.jsdelivr.net/gh/YunYouJun/cdn/css/md-cursors/pointer.cur
+  pointer: https://cdn.jsdelivr.net/gh/YunYouJun/cdn/css/md-cursors/link.cur
+  text: https://cdn.jsdelivr.net/gh/YunYouJun/cdn/css/md-cursors/text.cur
+
+codeblock:
+  copy_btn: true
+  prismjs:
+    light: default
+    dark: tomorrow
+
+# 字数统计
+wordcount:
+  enable: true
+  count: true
+  time: true
+
+# 页脚
+footer:
+  since: 2020
+  live_time:
+    enable: true
+    prefix: 本博客已萌萌哒地运行
+    suffix: (●'◡'●)
+    start_time: "2020-12-19T17:00:00"
+  custom_text: <a href="https://www.upyun.com/?utm_source=lianmeng&utm_medium=referral"><img src="/images/youpaiyun_logo.png" width="100px" /></a>
+# 使用彩色的词云替代原生的标签云
+wordcloud:
+  enable: true
