@@ -1,0 +1,123 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#0078E7"><meta name="author" content="誓箭小仙"><meta name="copyright" content="誓箭小仙"><meta name="generator" content="Hexo 5.3.0"><meta name="theme" content="hexo-theme-yun"><title>LoadRunner 性能测试工具的使用 | 誓箭小仙的小站</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@900&amp;display=swap" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/star-markdown-css@0.1.22/dist/yun/yun-markdown.min.css"><script src="//at.alicdn.com/t/font_1140697_ed8vp4atwoj.js" async></script><script src="https://cdn.jsdelivr.net/npm/scrollreveal/dist/scrollreveal.min.js" defer></script><script>document.addEventListener("DOMContentLoaded", () => {
+  [".post-card",".post-content img"].forEach((target)=> {
+    ScrollReveal().reveal(target);
+  })
+});
+</script><link id="light-prism-css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.20.0/themes/prism.css" media="(prefers-color-scheme: light)"><link id="dark-prism-css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.20.0/themes/prism-tomorrow.css" media="(prefers-color-scheme: dark)"><link rel="shortcut icon" type="image/svg+xml" href="/yun.svg"><link rel="mask-icon" href="/yun.svg" color="#0078E7"><link rel="alternate icon" href="/yun.ico"><link rel="preload" href="/css/hexo-theme-yun.css" as="style"><link rel="preload" href="/js/utils.js" as="script"><link rel="preload" href="/js/hexo-theme-yun.js" as="script"><link rel="prefetch" href="/js/sidebar.js" as="script"><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><link rel="stylesheet" href="/css/hexo-theme-yun.css"><script id="yun-config">
+    const Yun = window.Yun || {};
+    window.CONFIG = {"hostname":"onejftop.github.io","root":"/","title":"誓箭小仙的小站","version":"1.3.0","mode":"auto","copycode":true,"anonymous_image":"https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/avatar/none.jpg","say":{"api":"https://v1.hitokoto.cn","hitokoto":true},"fireworks":{"colors":["102, 167, 221","62, 131, 225","33, 78, 194"]}};
+  </script><meta name="description" content="​        Mercury LoadRunner 是一种预测系统行为和性能的负载测试工具。通过以模拟上千万用户实施并发负载及实时性能监测的方式来确认和查找问题，LoadRunner 能够对整个企业架构进行测试。通过使用LoadRunner ，企业能最大限度地缩短测试时间，优化性能和加速应用系统的发布周期。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LoadRunner 性能测试工具的使用">
+<meta property="og:url" content="https://onejftop.github.io/posts/34e6e9b1/index.html">
+<meta property="og:site_name" content="誓箭小仙的小站">
+<meta property="og:description" content="​        Mercury LoadRunner 是一种预测系统行为和性能的负载测试工具。通过以模拟上千万用户实施并发负载及实时性能监测的方式来确认和查找问题，LoadRunner 能够对整个企业架构进行测试。通过使用LoadRunner ，企业能最大限度地缩短测试时间，优化性能和加速应用系统的发布周期。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://youpaiyun.onejftop.com/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95/20210108-01.png">
+<meta property="og:image" content="https://youpaiyun.onejftop.com/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95/20210108-02.png">
+<meta property="og:image" content="http://onejftop-image.test.upcdn.net/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95/20210108-03.png">
+<meta property="og:image" content="http://onejftop-image.test.upcdn.net/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95/20210109-01.png">
+<meta property="og:image" content="http://onejftop-image.test.upcdn.net/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95/20210109-02.png">
+<meta property="og:image" content="http://onejftop-image.test.upcdn.net/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95/20210109-03.png">
+<meta property="og:image" content="http://onejftop-image.test.upcdn.net/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95/20210109-04.png">
+<meta property="og:image" content="http://onejftop-image.test.upcdn.net/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95/20210109-05.png">
+<meta property="og:image" content="http://onejftop-image.test.upcdn.net/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95/20210109-06.png">
+<meta property="og:image" content="http://onejftop-image.test.upcdn.net/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95/20210109-07.png">
+<meta property="article:published_time" content="2021-01-08T08:58:49.000Z">
+<meta property="article:modified_time" content="2021-01-22T04:27:28.467Z">
+<meta property="article:author" content="誓箭小仙">
+<meta property="article:tag" content="软件测试">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://youpaiyun.onejftop.com/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95/20210108-01.png"><script src="/js/ui/mode.js"></script></head><body><script defer src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script defer src="/js/ui/fireworks.js"></script><canvas class="fireworks"></canvas><div class="container"><a class="sidebar-toggle hty-icon-button" id="menu-btn"><div class="hamburger hamburger--spin" type="button"><span class="hamburger-box"><span class="hamburger-inner"></span></span></div></a><div class="sidebar-toggle sidebar-overlay"></div><aside class="sidebar"><script src="/js/sidebar.js"></script><ul class="sidebar-nav"><li class="sidebar-nav-item sidebar-nav-toc hty-icon-button sidebar-nav-active" data-target="post-toc-wrap" title="文章目录"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-list-ordered"></use></svg></li><li class="sidebar-nav-item sidebar-nav-overview hty-icon-button" data-target="site-overview-wrap" title="站点概览"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-passport-line"></use></svg></li></ul><div class="sidebar-panel" id="site-overview-wrap"><div class="site-info fix-top"><a class="site-author-avatar" href="/about/" title="誓箭小仙"><img width="96" loading="lazy" src="/Yun.png" alt="誓箭小仙"></a><div class="site-author-name"><a href="/about/">誓箭小仙</a></div><a class="site-name" href="/about/site.html">誓箭小仙的小站</a><sub class="site-subtitle"></sub><div class="site-desciption"></div></div><nav class="site-state"><a class="site-state-item hty-icon-button icon-home" href="/" title="首页"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-home-4-line"></use></svg></span></a><div class="site-state-item"><a href="/archives/" title="归档"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-archive-line"></use></svg></span><span class="site-state-item-count">42</span></a></div><div class="site-state-item"><a href="/categories/" title="分类"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-folder-2-line"></use></svg></span><span class="site-state-item-count">4</span></a></div><div class="site-state-item"><a href="/tags/" title="标签"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="site-state-item-count">15</span></a></div><a class="site-state-item hty-icon-button" target="_blank" rel="noopener" href="https://yun.yunyoujun.cn" title="文档"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-settings-line"></use></svg></span></a></nav><hr style="margin-bottom:0.5rem"><div class="links-of-author"><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://github.com/onejftop" title="GitHub" target="_blank" style="color:#181717"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-github-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="mailto:onejftop@onejftop.com" title="E-Mail" target="_blank" style="color:#8E71C1"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-mail-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://space.bilibili.com/96686020" title="哔哩哔哩动画" target="_blank" style="color:#FF8EB3"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-bilibili-line"></use></svg></a></div><hr style="margin:0.5rem 1rem"><div class="links"><a class="links-item hty-icon-button" href="/links/" title="我的小伙伴们" style="color:dodgerblue"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-genderless-line"></use></svg></a><a class="links-item hty-icon-button" href="/girls/" title="喜欢的女孩子" style="color:hotpink"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-women-line"></use></svg></a></div><br><a class="links-item hty-icon-button" id="toggle-mode-btn" href="javascript:;" title="Mode" style="color: #f1cb64"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-contrast-2-line"></use></svg></a></div><div class="sidebar-panel sidebar-panel-active" id="post-toc-wrap"><div class="post-toc"><div class="post-toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#LoadRunner-%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="toc-number">1.</span> <span class="toc-text">LoadRunner 的使用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#VuGen"><span class="toc-number">1.1.</span> <span class="toc-text">VuGen</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8F%92%E5%85%A5Text-Image%E6%A3%80%E6%9F%A5%E7%82%B9"><span class="toc-number">1.1.1.</span> <span class="toc-text">插入Text&#x2F;Image检查点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%B3%E8%81%94"><span class="toc-number">1.1.2.</span> <span class="toc-text">关联</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%82%E6%95%B0%E5%8C%96"><span class="toc-number">1.1.3.</span> <span class="toc-text">参数化</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%8F%82%E6%95%B0%E5%8F%96%E5%80%BC%E7%9B%B8%E5%85%B3%E8%AE%BE%E7%BD%AE"><span class="toc-number">1.1.3.1.</span> <span class="toc-text">参数取值相关设置</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%BA%E6%99%AF%E8%BF%90%E8%A1%8C%E5%99%A8"><span class="toc-number">1.2.</span> <span class="toc-text">场景运行器</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E5%9C%BA%E6%99%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E6%96%B9%E6%A1%88"><span class="toc-number">1.2.1.</span> <span class="toc-text">创建场景控制器方案</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9C%BA%E6%99%AF%E8%BF%90%E8%A1%8C%E5%99%A8%E7%9B%B8%E5%85%B3%E8%AE%BE%E7%BD%AE"><span class="toc-number">1.2.2.</span> <span class="toc-text">场景运行器相关设置</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Schedule%E8%AE%BE%E7%BD%AE%EF%BC%9A"><span class="toc-number">1.2.2.1.</span> <span class="toc-text">Schedule设置：</span></a></li></ol></li></ol></li></ol></li></ol></div></div></div></aside><main class="sidebar-translate" id="content"><div id="post"><article class="post-block" itemscope itemtype="https://schema.org/Article"><link itemprop="mainEntityOfPage" href="https://onejftop.github.io/posts/34e6e9b1/"><span hidden itemprop="author" itemscope itemtype="https://schema.org/Person"><meta itemprop="name" content="誓箭小仙"><meta itemprop="description"></span><span hidden itemprop="publisher" itemscope itemtype="https://schema.org/Organization"><meta itemprop="name" content="誓箭小仙的小站"></span><header class="post-header"><h1 class="post-title" itemprop="name headline">LoadRunner 性能测试工具的使用</h1><div class="post-meta"><div class="post-time" style="display:block"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-calendar-line"></use></svg></span> <time title="创建时间：2021-01-08 16:58:49" itemprop="dateCreated datePublished" datetime="2021-01-08T16:58:49+08:00">2021-01-08</time><span class="post-meta-divider">-</span><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-calendar-2-line"></use></svg></span> <time title="修改时间：2021-01-22 12:27:28" itemprop="dateModified" datetime="2021-01-22T12:27:28+08:00">2021-01-22</time></div><span class="post-count"><span class="post-symbolcount"><span class="post-meta-item-icon" title="本文字数"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-file-word-line"></use></svg></span> <span title="本文字数">1.1k</span><span class="post-meta-divider">-</span><span class="post-meta-item-icon" title="阅读时长"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-timer-line"></use></svg></span> <span title="阅读时长">4m</span></span></span><div class="post-classify"><span class="post-category"> <span class="post-meta-item-icon" style="margin-right:3px;"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-folder-line"></use></svg></span><span itemprop="about" itemscope itemtype="https://schema.org/Thing"><a class="category" href="/categories/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95/" style="--text-color:var(--hty-text-color)" itemprop="url" rel="index"><span itemprop="text">软件测试</span></a></span></span><span class="post-tag"><span class="post-meta-divider">-</span><a class="tag" href="/tags/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95/" style="--text-color:var(--hty-text-color)"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="tag-name">软件测试</span></a></span></div></div></header><section class="post-body" itemprop="articleBody"><div class="post-content markdown-body" style="--smc-primary:#0078E7;"><p>​        Mercury LoadRunner 是一种预测系统行为和性能的负载测试工具。通过以模拟上千万用户实施并发负载及实时性能监测的方式来确认和查找问题，LoadRunner 能够对整个企业架构进行测试。通过使用LoadRunner ，企业能最大限度地缩短测试时间，优化性能和加速应用系统的发布周期。</p>
+<a id="more"></a>
+
+<h2 id="LoadRunner-的使用"><a href="#LoadRunner-的使用" class="headerlink" title="LoadRunner 的使用"></a>LoadRunner 的使用</h2><h3 id="VuGen"><a href="#VuGen" class="headerlink" title="VuGen"></a>VuGen</h3><blockquote>
+<p>VuGen（Virtual User Generator） 在创建脚本时，VuGen会生成多个函数用于记录虚拟用户所执行的操作，并将这些函数插入到VuGen编辑器生成基本的虚拟用户脚本，这个创建脚本的过程也叫做录制脚本</p>
+</blockquote>
+<h4 id="插入Text-Image检查点"><a href="#插入Text-Image检查点" class="headerlink" title="插入Text/Image检查点"></a>插入Text/Image检查点</h4><p>在进行压力测试时，为了检查Web 服务器返回的网页是否正确，VuGen 允许我们插入Text/Imag 检查点，这些检查点验证网页上是否存在指定的Text 或者Imag，还可以测试在比较大的压力测试环境中，被测的网站功能是否保持正确。</p>
+<p><strong>View =&gt; Steps Toolbox =&gt; 搜索(web_reg_find)</strong></p>
+<p><img src="https://youpaiyun.onejftop.com/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95/20210108-01.png" alt="onejftop" loading="lazy"></p>
+<pre class="line-numbers language-none"><code class="language-none">web_reg_find(&quot;Text&#x3D;Welcome, &lt;b&gt;jojo&lt;&#x2F;b&gt;&quot;,
+		LAST);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h4 id="关联"><a href="#关联" class="headerlink" title="关联"></a>关联</h4><ul>
+<li><p>所谓的关联（correlation）就是把脚本中某些写死的（hard-coded）数据，转变成是撷取自服务器所送的、动态的、每次都不一样的数据。</p>
+</li>
+<li><p>举一个常见的例子，服务器在每个浏览器第一次跟它要数据时，都会在数据中夹带一个唯一的辨识码，接下来就会利用这个辨识码来辨识跟它要数据的是不是同一个浏览器。一般称这个辨识码为Session ID。对于每个新的交易，服务器都会产生新的Session ID给浏览器。这也就是为什么执行脚本会失败的原因，因为VuGen还是用旧的Session ID向服务器要数据，服务器会发现这个Session ID是失效的或是它根本不认识这个Session ID，当然就不会传送正确的网页数据给VuGen了。</p>
+</li>
+</ul>
+<p>web_reg_save_param_ex</p>
+<p><img src="https://youpaiyun.onejftop.com/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95/20210108-02.png" alt="onejftop" loading="lazy"></p>
+<pre class="line-numbers language-none"><code class="language-none">web_reg_save_param_ex(
+		&quot;ParamName&#x3D;userSession&quot;,
+		&quot;LB&#x3D;name&#x3D;\&quot;userSession\&quot; value&#x3D;\&quot;&quot;,
+		&quot;RB&#x3D;\&quot;&quot;,
+		SEARCH_FILTERS,
+		LAST);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>替换所需要的关联的数据：选中需替换的数据 =&gt; 右键 =&gt; Replace with Parameter =&gt; 选择关联的参数</p>
+<h4 id="参数化"><a href="#参数化" class="headerlink" title="参数化"></a>参数化</h4><ul>
+<li><p>用参数表示用户的脚本有两个优点：</p>
+<p>–① 可以使脚本的长度变短。</p>
+<p>–② 可以使用不同的数值来测试你的脚本。例如，如果你企图搜索不同名称的图书，你仅仅需要写提交函数一次。在回放的过程中，你可以使用不同的参数值，而不只搜索一个特定名称的值。</p>
+</li>
+<li><p>参数化包含以下两项任务：</p>
+<p>–① 在脚本中用参数取代常量值。</p>
+<p>–② 设置参数的属性以及数据源。</p>
+</li>
+</ul>
+<p>选中需要参数化的值 =&gt; 右键 =&gt; Replace with Parameter =&gt; Create New Parameter</p>
+<p><img src="http://onejftop-image.test.upcdn.net/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95/20210108-03.png" alt="onejftop" loading="lazy"></p>
+<p><img src="http://onejftop-image.test.upcdn.net/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95/20210109-01.png" alt="onejftop" loading="lazy"></p>
+<h5 id="参数取值相关设置"><a href="#参数取值相关设置" class="headerlink" title="参数取值相关设置"></a>参数取值相关设置</h5><p>Select next row：选择下一行</p>
+<ul>
+<li>Sequential：按照参数化的数据顺序，一个个的来取。</li>
+<li>Random：参数化中的数据,每次随机的从中抽取数据。</li>
+<li>Unique ：为每个虚拟用户分配一条唯一的数据。</li>
+</ul>
+<p>Update value on：更新时的值</p>
+<ul>
+<li>Each iteration ：每次迭代时取新的值。</li>
+<li>Each occurrence ：每次参数化时取新的值，这里强调前后两次取值不能相同。</li>
+<li>Once ：参数话中的数据，一条数据只能抽取一次</li>
+</ul>
+<p>When out values：值不够的情况如何取值</p>
+<ul>
+<li>Abort Vuser：停止测试</li>
+<li>Continue in a cyclic manner：循环取值，再重新开始新一轮的unique取值</li>
+<li>Continue with last value：沿用最后一个值</li>
+</ul>
+<h3 id="场景运行器"><a href="#场景运行器" class="headerlink" title="场景运行器"></a>场景运行器</h3><h4 id="创建场景控制器方案"><a href="#创建场景控制器方案" class="headerlink" title="创建场景控制器方案"></a>创建场景控制器方案</h4><p>VuGen =&gt; 菜单栏 (Tools) =&gt; Create Controller Scenario…</p>
+<p><img src="http://onejftop-image.test.upcdn.net/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95/20210109-02.png" alt="onejftop" loading="lazy"></p>
+<h4 id="场景运行器相关设置"><a href="#场景运行器相关设置" class="headerlink" title="场景运行器相关设置"></a>场景运行器相关设置</h4><h5 id="Schedule设置："><a href="#Schedule设置：" class="headerlink" title="Schedule设置："></a>Schedule设置：</h5><p>主要是用来设置用户的行为方式</p>
+<p><img src="http://onejftop-image.test.upcdn.net/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95/20210109-03.png" alt="onejftop" loading="lazy"></p>
+<p>Schedule Name：场景名称</p>
+<p>Schedule By：</p>
+<ul>
+<li><p>Secnario(按场景计划)</p>
+<p><strong>Initialize</strong>：设置脚本运行前如何初始化每个虚拟用户。包含3种方式：</p>
+<p>​    <img src="http://onejftop-image.test.upcdn.net/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95/20210109-04.png" alt="onejftop" loading="lazy"></p>
+<p> <strong>Start Vusers</strong> ：设置虚拟用户加载的过程（是指总的虚拟用户数）。包含2种加载方式：</p>
+<p>​     <img src="http://onejftop-image.test.upcdn.net/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95/20210109-05.png" alt="onejftop" loading="lazy"></p>
+<p> <strong>Duration</strong> ：设置场景执行的时间，包含2种方式：</p>
+<p>​     <img src="http://onejftop-image.test.upcdn.net/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95/20210109-06.png" alt="onejftop" loading="lazy"></p>
+<p> <strong>Stop Vusers</strong> ：设置场景执行完成后虚拟用户如何释放的策略。（只有duration设置为按指定时间运行时才需要设置该项）</p>
+<p>​    <img src="http://onejftop-image.test.upcdn.net/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95/20210109-07.png" alt="onejftop" loading="lazy"></p>
+</li>
+<li><p>Group(按分组计划)</p>
+</li>
+</ul>
+</div><div id="reward-container"><span class="hty-icon-button button-glow" id="reward-button" title="打赏" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === &quot;none&quot;) ? &quot;block&quot; : &quot;none&quot;;"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-hand-coin-line"></use></svg></span><div id="reward-comment">I'm so cute. Please give me money.</div><div id="qr" style="display:none;"><div style="display:inline-block"><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/alipay-qrcode.jpg"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/alipay-qrcode.jpg" alt="支付宝" title="支付宝"></a><div><span style="color:#00A3EE"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-alipay-line"></use></svg></span></div></div><div style="display:inline-block"><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/qqpay-qrcode.png"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/qqpay-qrcode.png" alt="QQ 支付" title="QQ 支付"></a><div><span style="color:#12B7F5"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-qq-line"></use></svg></span></div></div><div style="display:inline-block"><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/wechatpay-qrcode.jpg"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/wechatpay-qrcode.jpg" alt="微信支付" title="微信支付"></a><div><span style="color:#2DC100"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-wechat-pay-line"></use></svg></span></div></div></div></div><ul class="post-copyright"><li class="post-copyright-author"><strong>本文作者：</strong>誓箭小仙</li><li class="post-copyright-link"><strong>本文链接：</strong><a href="https://onejftop.github.io/posts/34e6e9b1/" title="LoadRunner 性能测试工具的使用">https://onejftop.github.io/posts/34e6e9b1/</a></li><li class="post-copyright-license"><strong>版权声明：</strong>本博客所有文章除特别声明外，均默认采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener" title="CC BY-NC-SA 4.0 "><svg class="icon"><use xlink:href="#icon-creative-commons-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-by-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-nc-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-sa-line"></use></svg></a> 许可协议。</li></ul></section></article><div class="post-nav"><div class="post-nav-item"><a class="post-nav-prev" href="/posts/c213114a/" rel="prev" title="软件测试 自动化测试"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-left-s-line"></use></svg><span class="post-nav-text">软件测试 自动化测试</span></a></div><div class="post-nav-item"><a class="post-nav-next" href="/posts/a09486d2/" rel="next" title="axios"><span class="post-nav-text">axios</span><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-right-s-line"></use></svg></a></div></div></div><div id="comment"><div class="comment-tooltip text-center"><span>点击按钮跳转 GitHub Issues 评论。</span><br><span>若没有本文 Issue，您可以使用 Comment 模版新建。</span><br><a class="hty-button hty-button--raised" id="github-issues" target="_blank" rel="noopener" href="https://github.com/YunYouJun/yunyoujun.github.io/issues?q=is:issue+LoadRunner 性能测试工具的使用">GitHub Issues</a></div></div></main><footer class="sidebar-translate" id="footer"><div class="copyright"><span>&copy; 2020 – 2021 </span><span class="with-love" id="animate"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-cloud-line"></use></svg></span><span class="author"> 誓箭小仙</span></div><div class="powered"><span>由 <a href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> 驱动 v5.3.0</span><span class="footer-separator">|</span><span>主题 - <a rel="noopener" href="https://github.com/YunYouJun/hexo-theme-yun" target="_blank"><span>Yun</span></a> v1.3.0</span></div><div class="live_time"><span>本博客已萌萌哒地运行</span><span id="display_live_time"></span><span class="moe-text">(●'◡'●)</span><script>function blog_live_time() {
+  window.setTimeout(blog_live_time, 1000);
+  const start = new Date('2020-12-19T17:00:00');
+  const now = new Date();
+  const timeDiff = (now.getTime() - start.getTime());
+  const msPerMinute = 60 * 1000;
+  const msPerHour = 60 * msPerMinute;
+  const msPerDay = 24 * msPerHour;
+  const passDay = Math.floor(timeDiff / msPerDay);
+  const passHour = Math.floor((timeDiff % msPerDay) / 60 / 60 / 1000);
+  const passMinute = Math.floor((timeDiff % msPerHour) / 60 / 1000);
+  const passSecond = Math.floor((timeDiff % msPerMinute) / 1000);
+  display_live_time.innerHTML = " " + passDay + " 天 " + passHour + " 小时 " + passMinute + " 分 " + passSecond + " 秒";
+}
+blog_live_time();
+</script></div><div class="footer-custom-text"><a target="_blank" rel="noopener" href="https://www.upyun.com/?utm_source=lianmeng&utm_medium=referral"><img src="/images/youpaiyun_logo.png" width="100px" /></a></div></footer><a class="hty-icon-button" id="goUp" aria-label="back-to-top" href="#"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-up-s-line"></use></svg><svg class="progress-circle-container" viewBox="0 0 100 100"><circle class="progress-circle" id="progressCircle" cx="50" cy="50" r="48" fill="none" stroke="#0078E7" stroke-width="2" stroke-linecap="round"></circle></svg></a></div><script defer src="/js/utils.js"></script><script defer src="/js/hexo-theme-yun.js"></script></body></html>
